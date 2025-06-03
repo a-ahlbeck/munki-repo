@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>_metadata</key>
+	<dict>
+		<key>created_by</key>
+		<string>ahlbeck</string>
+		<key>creation_date</key>
+		<date>2025-06-03T12:13:37Z</date>
+		<key>munki_version</key>
+		<string>6.6.5.4711</string>
+		<key>os_version</key>
+		<string>15.3.2</string>
+	</dict>
+	<key>autoremove</key>
+	<false/>
+	<key>blocking_applications</key>
+	<array>
+		<string>Adobe Acrobat Pro.app</string>
+		<string>Adobe Acrobat Reader DC.app</string>
+		<string>Adobe Acrobat Reader.app</string>
+		<string>Adobe Acrobat.app</string>
+		<string>Adobe Reader.app</string>
+	</array>
+	<key>catalogs</key>
+	<array>
+		<string>testing</string>
+	</array>
+	<key>description</key>
+	<string>Adobe® Reader® is the global standard for reliably viewing, printing, and commenting on PDF documents. It's the only PDF file viewer that can open and interact with all types of PDF content, including forms and multimedia.</string>
+	<key>display_name</key>
+	<string>Adobe Reader</string>
+	<key>installed_size</key>
+	<integer>430458</integer>
+	<key>installer_item_hash</key>
+	<string>780491cb985d853e150402530e36ccfb3d85e42919e78aee97792638998d12af</string>
+	<key>installer_item_location</key>
+	<string>apps/Adobe/AdobeReader-25.001.20467.dmg</string>
+	<key>installer_item_size</key>
+	<integer>605449</integer>
+	<key>installs</key>
+	<array>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.adobe.Reader</string>
+			<key>CFBundleName</key>
+			<string>Acrobat Reader</string>
+			<key>CFBundleShortVersionString</key>
+			<string>25.001.20467</string>
+			<key>CFBundleVersion</key>
+			<string>25.001.20467</string>
+			<key>minosversion</key>
+			<string>12.0</string>
+			<key>path</key>
+			<string>/Applications/Adobe Acrobat Reader.app</string>
+			<key>type</key>
+			<string>application</string>
+			<key>version_comparison_key</key>
+			<string>CFBundleShortVersionString</string>
+		</dict>
+	</array>
+	<key>minimum_os_version</key>
+	<string>10.15.0</string>
+	<key>name</key>
+	<string>AdobeReader</string>
+	<key>preinstall_script</key>
+	<string>#!/bin/sh
+if [ -e "/Applications/Adobe Acrobat Reader.app" ]; then
+	rm -r "/Applications/Adobe Acrobat Reader.app"
+fi
+if [ -e "/Applications/Adobe Acrobat Reader DC.app" ]; then
+	rm -r "/Applications/Adobe Acrobat Reader DC.app"
+fi
+exit 0
+</string>
+	<key>receipts</key>
+	<array>
+		<dict>
+			<key>installed_size</key>
+			<integer>329733</integer>
+			<key>packageid</key>
+			<string>com.adobe.acrobat.DC.reader.app.pkg.MUI</string>
+			<key>version</key>
+			<string>25.001.20467</string>
+		</dict>
+		<dict>
+			<key>installed_size</key>
+			<integer>99323</integer>
+			<key>packageid</key>
+			<string>com.adobe.acrobat.DC.reader.appsupport.pkg.MUI</string>
+			<key>version</key>
+			<string>25.001.20467</string>
+		</dict>
+		<dict>
+			<key>installed_size</key>
+			<integer>1402</integer>
+			<key>packageid</key>
+			<string>com.adobe.armdc.app.pkg</string>
+			<key>version</key>
+			<string>1.0.0</string>
+		</dict>
+	</array>
+	<key>unattended_install</key>
+	<true/>
+	<key>uninstall_method</key>
+	<string>removepackages</string>
+	<key>uninstallable</key>
+	<true/>
+	<key>version</key>
+	<string>25.001.20467</string>
+</dict>
+</plist>

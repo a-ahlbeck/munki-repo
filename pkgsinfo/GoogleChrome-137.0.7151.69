@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>_metadata</key>
+	<dict>
+		<key>created_by</key>
+		<string>root</string>
+		<key>creation_date</key>
+		<date>2025-06-03T08:51:02Z</date>
+		<key>munki_version</key>
+		<string>6.6.5.4711</string>
+		<key>os_version</key>
+		<string>15.3.2</string>
+	</dict>
+	<key>autoremove</key>
+	<false/>
+	<key>catalogs</key>
+	<array>
+		<string>testing</string>
+	</array>
+	<key>category</key>
+	<string>web app</string>
+	<key>description</key>
+	<string>GoogleChrome</string>
+	<key>developer</key>
+	<string>Google</string>
+	<key>display_name</key>
+	<string>GoogleChrome</string>
+	<key>installed_size</key>
+	<integer>625281</integer>
+	<key>installer_item_hash</key>
+	<string>cd80727bc0f0f64abef38ed27801c3bd64c88a9c3bd50158ec736c614f4b17a8</string>
+	<key>installer_item_location</key>
+	<string>GoogleChrome-137.0.7151.69.pkg</string>
+	<key>installer_item_size</key>
+	<integer>211934</integer>
+	<key>minimum_os_version</key>
+	<string>10.5.0</string>
+	<key>name</key>
+	<string>GoogleChrome</string>
+	<key>receipts</key>
+	<array>
+		<dict>
+			<key>installed_size</key>
+			<integer>625281</integer>
+			<key>packageid</key>
+			<string>com.google.Chrome</string>
+			<key>version</key>
+			<string>137.0.7151.69</string>
+		</dict>
+	</array>
+	<key>unattended_install</key>
+	<false/>
+	<key>unattended_uninstall</key>
+	<false/>
+	<key>uninstall_method</key>
+	<string>removepackages</string>
+	<key>uninstallable</key>
+	<true/>
+	<key>version</key>
+	<string>137.0.7151.69</string>
+</dict>
+</plist>
