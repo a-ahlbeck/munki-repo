@@ -3,7 +3,7 @@ name: AutoPkg Munki Automation
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 6 * * *' # Kör varje dag kl 06:00 UTC
+    - cron: '0 6 * * *'  # Kör varje dag kl 06:00 UTC
 
 jobs:
   autopkg:
@@ -13,11 +13,15 @@ jobs:
       - name: Klona repo
         uses: actions/checkout@v4
 
-      - name: Installera pipx och AutoPkg CLI
+      - name: Installera Munki
         run: |
-          brew install pipx
-          pipx ensurepath
-          pipx install git+https://github.com/autopkg/autopkg.git
+          curl -L -o munkitools.pkg https://github.com/munki/munki/releases/download/v6.6.5/munkitools-6.6.5.4711.pkg
+          sudo installer -pkg munkitools.pkg -target /
+
+      - name: Installera AutoPkg
+        run: |
+          brew install autopkg
+          autopkg version
 
       - name: Lägg till AutoPkg-repo
         run: |
@@ -25,7 +29,7 @@ jobs:
 
       - name: Kör AutoPkg-recept och importera till Munki
         run: |
-          mkdir -p pkgs pkgsinfo icons manifests
+          mkdir -p pkgs pkgsinfo manifests icons
           defaults write com.googlecode.munki.munkiimport repo_path "$GITHUB_WORKSPACE"
           autopkg run -v googlechrome.munki AdobeReader.munki
 
@@ -33,9 +37,9 @@ jobs:
         run: |
           git config user.name "MunkiBot"
           git config user.email "bot@munki.local"
-          git checkout -b autopkg-update-$(date +'%Y%m%d')
+          git checkout -b autopkg-update-$(date +'%Y%m%d') || git checkout autopkg-update-$(date +'%Y%m%d')
           git add .
-          git commit -m "AutoPkg: uppdaterade paket och pkgsinfo"
+          git commit -m "AutoPkg: uppdaterade paket och pkgsinfo" || echo "Inga ändringar att committa"
           git push origin HEAD
 
       - name: Skapa Pull Request
