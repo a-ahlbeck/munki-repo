@@ -8,33 +8,41 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Klona repo
-        uses: actions/checkout@v4
+    - name: Klona repo
+      uses: actions/checkout@v4
 
-      - name: Installera AutoPkg (CLI)
-        run: |
-          pip3 install --user autopkg
-          echo "✅ AutoPkg installerat"
-          export PATH=$HOME/Library/Python/3.*/bin:$PATH
-          autopkg version
+    - name: Installera beroenden (brew + pipx + autopkg)
+      run: |
+        brew install pipx
+        pipx ensurepath
+        pipx install autopkg
+        autopkg version
 
-      - name: Lägg till AutoPkg-repo
-        run: |
-          export PATH=$HOME/Library/Python/3.*/bin:$PATH
-          autopkg repo-add https://github.com/autopkg/recipes.git
+    - name: Lägg till AutoPkg-repo
+      run: |
+        autopkg repo-add https://github.com/autopkg/recipes.git
 
-      - name: Ange Munki-repo path
-        run: |
-          export PATH=$HOME/Library/Python/3.*/bin:$PATH
-          defaults write com.googlecode.munki.munkiimport repo_path "$GITHUB_WORKSPACE"
+    - name: Ange Munki-repo path
+      run: |
+        defaults write com.googlecode.munki.munkiimport repo_path "$GITHUB_WORKSPACE"
 
-      - name: Kör AutoPkg-recept
-        run: |
-          export PATH=$HOME/Library/Python/3.*/bin:$PATH
-          autopkg run -v googlechrome.munki AdobeReader.munki
+    - name: Kör AutoPkg-recept
+      run: |
+        autopkg run -v googlechrome.munki AdobeReader.munki
 
-      - name: Commit ändringar
-        run: |
-          git config user.name "MunkiBot"
-          git config user.email "bot@munki.local"
-          git checkout -b autopkg-update-$(date +'%Y%m%d')
+    - name: Commit ändringar
+      run: |
+        git config user.name "MunkiBot"
+        git config user.email "bot@munki.local"
+        git checkout -b autopkg-update-$(date +'%Y%m%d')
+        git add .
+        git commit -m "AutoPkg: uppdaterade pkginfo och pkgs" || echo "Inget att committa"
+        git push origin HEAD || echo "Inget att pusha"
+
+    - name: Skapa Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        title: "AutoPkg uppdateringar"
+        body: "Automatiska uppdateringar från AutoPkg"
+        base: main
+        branch: autopkg-update-$(date +'%Y%m%d')
