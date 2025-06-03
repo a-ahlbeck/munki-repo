@@ -11,12 +11,13 @@ jobs:
     - name: Klona repo
       uses: actions/checkout@v4
 
-    - name: Installera beroenden (brew + pipx + autopkg)
+    - name: Installera AutoPkg manuellt
       run: |
-        brew install pipx
-        pipx ensurepath
-        pipx install autopkg
-        autopkg version
+        curl -L -O https://github.com/autopkg/autopkg/releases/download/v2.7.1/autopkg-2.7.1.pkg
+        sudo installer -pkg autopkg-2.7.1.pkg -target /
+
+    - name: Kontrollera autopkg
+      run: autopkg version
 
     - name: Lägg till AutoPkg-repo
       run: |
