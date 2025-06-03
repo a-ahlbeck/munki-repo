@@ -1,2 +1,13 @@
-pkgs/*
-icons/*
+# Ignorera stora binärfiler och ikoner
+pkgs/
+icons/
+*.dmg
+*.pkg
+*.zip
+*.iso
+
+# AutoPkg cache
+~/Library/AutoPkg/Cache/
+
+# Systemfiler
+.DS_Store
