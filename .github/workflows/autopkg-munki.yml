@@ -1,0 +1,40 @@
+name: AutoPkg Munki Automation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  autopkg:
+    runs-on: macos-latest
+
+    steps:
+      - name: Klona repo
+        uses: actions/checkout@v4
+
+      - name: Installera AutoPkg (CLI)
+        run: |
+          pip3 install --user autopkg
+          echo "✅ AutoPkg installerat"
+          export PATH=$HOME/Library/Python/3.*/bin:$PATH
+          autopkg version
+
+      - name: Lägg till AutoPkg-repo
+        run: |
+          export PATH=$HOME/Library/Python/3.*/bin:$PATH
+          autopkg repo-add https://github.com/autopkg/recipes.git
+
+      - name: Ange Munki-repo path
+        run: |
+          export PATH=$HOME/Library/Python/3.*/bin:$PATH
+          defaults write com.googlecode.munki.munkiimport repo_path "$GITHUB_WORKSPACE"
+
+      - name: Kör AutoPkg-recept
+        run: |
+          export PATH=$HOME/Library/Python/3.*/bin:$PATH
+          autopkg run -v googlechrome.munki AdobeReader.munki
+
+      - name: Commit ändringar
+        run: |
+          git config user.name "MunkiBot"
+          git config user.email "bot@munki.local"
+          git checkout -b autopkg-update-$(date +'%Y%m%d')
