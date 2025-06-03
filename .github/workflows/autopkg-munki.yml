@@ -6,44 +6,46 @@ on:
 jobs:
   autopkg:
     runs-on: macos-latest
-
     steps:
-    - name: Klona repo
-      uses: actions/checkout@v4
+      - name: Klona repository
+        uses: actions/checkout@v4
 
-    - name: Installera AutoPkg manuellt
-      run: |
-        curl -L -O https://github.com/autopkg/autopkg/releases/download/v2.7.1/autopkg-2.7.1.pkg
-        sudo installer -pkg autopkg-2.7.1.pkg -target /
+      - name: Installera Munki
+        run: |
+          curl -L -o munkitools.pkg https://github.com/munki/munki/releases/download/v5.7.0/munkitools-5.7.0.4460.pkg
+          sudo installer -pkg munkitools.pkg -target /
 
-    - name: Kontrollera autopkg
-      run: autopkg version
+      - name: Installera AutoPkg
+        run: |
+          curl -L -o autopkg.pkg https://github.com/autopkg/autopkg/releases/download/v2.7.4/autopkg-2.7.4.pkg
+          sudo installer -pkg autopkg.pkg -target /
+          autopkg version
 
-    - name: Lägg till AutoPkg-repo
-      run: |
-        autopkg repo-add https://github.com/autopkg/recipes.git
+      - name: Lägg till AutoPkg-repo
+        run: |
+          autopkg repo-add https://github.com/autopkg/recipes.git
 
-    - name: Ange Munki-repo path
-      run: |
-        defaults write com.googlecode.munki.munkiimport repo_path "$GITHUB_WORKSPACE"
+      - name: Sätt Munki-repo path
+        run: |
+          defaults write com.googlecode.munki.munkiimport repo_path "$GITHUB_WORKSPACE"
 
-    - name: Kör AutoPkg-recept
-      run: |
-        autopkg run -v googlechrome.munki AdobeReader.munki
+      - name: Kör AutoPkg-recept
+        run: |
+          autopkg run -v googlechrome.munki AdobeReader.munki
 
-    - name: Commit ändringar
-      run: |
-        git config user.name "MunkiBot"
-        git config user.email "bot@munki.local"
-        git checkout -b autopkg-update-$(date +'%Y%m%d')
-        git add .
-        git commit -m "AutoPkg: uppdaterade pkginfo och pkgs" || echo "Inget att committa"
-        git push origin HEAD || echo "Inget att pusha"
+      - name: Commit ändringar
+        run: |
+          git config user.name "MunkiBot"
+          git config user.email "bot@munki.local"
+          git checkout -b autopkg-update-$(date +'%Y%m%d')
+          git add .
+          git commit -m "AutoPkg: uppdaterade pkginfo och pkgs" || echo "Inga ändringar"
+          git push origin HEAD || echo "Inget att pusha"
 
-    - name: Skapa Pull Request
-      uses: peter-evans/create-pull-request@v5
-      with:
-        title: "AutoPkg uppdateringar"
-        body: "Automatiska uppdateringar från AutoPkg"
-        base: main
-        branch: autopkg-update-$(date +'%Y%m%d')
+      - name: Skapa Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: "AutoPkg uppdateringar"
+          body: "Automatiska uppdateringar från AutoPkg"
+          base: main
+          branch: autopkg-update-$(date +'%Y%m%d')
