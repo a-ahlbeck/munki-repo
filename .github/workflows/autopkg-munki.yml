@@ -20,15 +20,14 @@ jobs:
 
       - name: Lägg till AutoPkg-repo
         run: |
-          autopkg repo-add https://github.com/autopkg/recipes.git
+          python autopkg/Code/autopkg repo-add https://github.com/autopkg/recipes.git
 
       - name: Kör AutoPkg-recept och importera till Munki
         env:
           MUNKI_REPO: ${{ github.workspace }}
         run: |
           mkdir -p pkgs pkgsinfo icons manifests
-          defaults write com.googlecode.munki.munkiimport repo_path "$MUNKI_REPO"
-          autopkg run -v googlechrome.munki AdobeReader.munki
+          python autopkg/Code/autopkg run -v googlechrome.munki AdobeReader.munki
 
       - name: Git commit och push
         run: |
@@ -45,4 +44,4 @@ jobs:
           title: "AutoPkg uppdateringar"
           body: "Automatiska uppdateringar från AutoPkg CLI via GitHub Actions."
           base: main
-          branch: autopkg-update-$(date +'%Y%m%d')
+          branch: autopkg-update-${{ github.run_id }}
