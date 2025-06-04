@@ -1,7 +1,7 @@
 name: AutoPkg Munki Automation
 
 on:
-  workflow_dispatch:  # Manuell körning
+  workflow_dispatch:
   schedule:
     - cron: '0 6 * * *'  # Kör varje dag kl 06:00 UTC
 
@@ -13,12 +13,10 @@ jobs:
       - name: Klona repo
         uses: actions/checkout@v4
 
-      - name: Installera AutoPkg via setup-autopkg-actions
-        uses: autopkg/setup-autopkg-actions@main
-        with:
-          use-python-version: "3.10"
-          use-autopkg-branch: main
-          set-powershell-policy: false
+      - name: Installera AutoPkg via .pkg
+        run: |
+          curl -L -o autopkg.pkg https://github.com/autopkg/autopkg/releases/download/v2.7.4/autopkg-2.7.4.pkg
+          sudo installer -pkg autopkg.pkg -target /
 
       - name: Lägg till AutoPkg recipes repo
         run: autopkg repo-add https://github.com/autopkg/recipes.git
@@ -44,4 +42,4 @@ jobs:
           title: "AutoPkg uppdateringar"
           body: "Automatiska uppdateringar från AutoPkg CLI via GitHub Actions."
           base: main
-          branch: autopkg-update-$(date +'%Y%m%d')
+          branch: autopkg-update-${{ github.run_id }}
