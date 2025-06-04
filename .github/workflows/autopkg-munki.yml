@@ -13,26 +13,22 @@ jobs:
       - name: Klona repo
         uses: actions/checkout@v4
 
-      - name: Installera AutoPkg CLI (setup-autopkg-actions)
+      - name: Installera AutoPkg med setup-autopkg-actions
         uses: autopkg/setup-autopkg-actions@main
         with:
-          use-python-version: '3.10'
-
-      - name: Skapa Munki-katalogstruktur om den saknas
-        run: |
-          mkdir -p pkgs pkgsinfo manifests icons
-
-      - name: Sätt Munki-repo-path för munkiimport
-        run: |
-          defaults write com.googlecode.munki.munkiimport repo_path "$GITHUB_WORKSPACE"
+          use-python-version: "3.10"
+          use-autopkg-branch: dev
+          set-powershell-policy: false
 
       - name: Lägg till AutoPkg-repo
         run: |
-          autopkg repo-add https://github.com/autopkg/recipes.git
+          python autopkg/Code/autopkg repo-add https://github.com/autopkg/recipes.git
 
       - name: Kör AutoPkg-recept och importera till Munki
         run: |
-          autopkg run -v googlechrome.munki AdobeReader.munki
+          mkdir -p pkgs pkgsinfo icons manifests
+          defaults write com.googlecode.munki.munkiimport repo_path "$GITHUB_WORKSPACE"
+          python autopkg/Code/autopkg run -v googlechrome.munki AdobeReader.munki
 
       - name: Git commit och push
         run: |
