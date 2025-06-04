@@ -1,9 +1,9 @@
 name: AutoPkg Munki Automation
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Manuell körning
   schedule:
-    - cron: '0 6 * * *'  # Kör varje dag kl 06:00 UTC
+    - cron: '0 6 * * *'  # Varje dag kl 06:00 UTC
 
 jobs:
   autopkg:
@@ -13,27 +13,19 @@ jobs:
       - name: Klona repo
         uses: actions/checkout@v4
 
-      - name: Setup AutoPkg med rätt branch
-        uses: autopkg/setup-autopkg-actions@main
-        with:
-          use-python-version: "3.10"
-          use-autopkg-branch: master
-          set-powershell-policy: true
+      - name: Installera AutoPkg via Homebrew
+        run: brew install --cask autopkg
 
-      - name: Lägg till AutoPkg-repo
-        run: |
-          autopkg repo-add https://github.com/autopkg/recipes.git
+      - name: Lägg till AutoPkg recipes repo
+        run: autopkg repo-add https://github.com/autopkg/recipes.git
 
-      - name: Skapa Munki-struktur
+      - name: Kör AutoPkg-recept och importera till Munki
         run: |
           mkdir -p pkgs pkgsinfo icons manifests
-
-      - name: Kör AutoPkg och importera till Munki
-        run: |
           defaults write com.googlecode.munki.munkiimport repo_path "$GITHUB_WORKSPACE"
           autopkg run -v googlechrome.munki AdobeReader.munki
 
-      - name: Git commit och push
+      - name: Commit ändringar
         run: |
           git config user.name "MunkiBot"
           git config user.email "bot@munki.local"
