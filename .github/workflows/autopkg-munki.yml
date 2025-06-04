@@ -3,33 +3,33 @@ name: AutoPkg Munki Automation
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 6 * * *' # Kör varje dag kl 06:00 UTC
+    - cron: '0 6 * * *' # Kör dagligen kl 06:00 UTC
 
 jobs:
   autopkg:
     runs-on: macos-latest
 
     steps:
-      - name: Klona repo
+      - name: Klona ditt repo
         uses: actions/checkout@v4
 
-      - name: Installera AutoPkg
-        uses: autopkg/setup-autopkg-actions@v0.1.2
-        with:
-          use-python-version: "3.10"
+      - name: Installera AutoPkg (via pipx)
+        run: |
+          brew install pipx
+          pipx ensurepath
+          pipx install git+https://github.com/autopkg/autopkg.git
 
       - name: Lägg till AutoPkg-repo
         run: |
-          python autopkg/Code/autopkg repo-add https://github.com/autopkg/recipes.git
+          autopkg repo-add https://github.com/autopkg/recipes.git
 
       - name: Kör AutoPkg-recept och importera till Munki
-        env:
-          MUNKI_REPO: ${{ github.workspace }}
         run: |
           mkdir -p pkgs pkgsinfo icons manifests
-          python autopkg/Code/autopkg run -v googlechrome.munki AdobeReader.munki
+          defaults write com.googlecode.munki.munkiimport repo_path "$GITHUB_WORKSPACE"
+          autopkg run -v googlechrome.munki AdobeReader.munki
 
-      - name: Git commit och push
+      - name: Skapa Git branch och commit
         run: |
           git config user.name "MunkiBot"
           git config user.email "bot@munki.local"
